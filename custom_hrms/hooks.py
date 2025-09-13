@@ -153,7 +153,11 @@ doc_events = {
         "before_save": "custom_hrms.api.employee.on_employee_before_save"
     },
     "Salary Slip": {
-        "validate": "custom_hrms.api.payroll.assign_salary_structure_based_on_regime"
+        "validate": [
+            "custom_hrms.api.payroll.assign_salary_structure_based_on_regime",
+            "custom_hrms.api.payroll.adjust_tax_based_on_declaration"
+        ]
+            
     }
 }
 # Scheduled Tasks
