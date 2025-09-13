@@ -69,3 +69,43 @@ def update_salary_structure_assignments(payroll_entry):
             doc.insert(ignore_permissions=True)
 
     frappe.db.commit()
+
+
+def adjust_tax_based_on_declaration(salary_slip, method):
+    """Reduce Income Tax deduction based on employee's investment declarations"""
+    if not salary_slip.employee:
+        return
+
+    fiscal_year = frappe.db.get_value("Fiscal Year", 
+        {"year_start_date": ["<=", salary_slip.start_date],
+         "year_end_date": [">=", salary_slip.end_date]}, "name")
+
+    if not fiscal_year:
+        return
+
+    declaration = frappe.db.get_value(
+        "Employee Investment Declaration",
+        {"employee": salary_slip.employee, "fiscal_year": fiscal_year},
+        ["section_80c", "section_80d", "other_exemptions"],
+        as_dict=True
+    )
+
+    if not declaration:
+        return  # no declaration submitted → no adjustment
+
+    total_exemption = sum([
+        declaration.section_80c or 0,
+        declaration.section_80d or 0,
+        declaration.other_exemptions or 0,
+    ])
+
+    count = 0
+    # Adjust income tax deduction line item
+    if salary_slip.deductions:
+        for d in salary_slip.deductions:
+            if d.salary_component == "Income Tax":
+                d.amount = max(0, d.amount - total_exemption)
+            count = count + d.amount
+    if count > 0:
+        salary_slip.total_deduction = count
+ 
