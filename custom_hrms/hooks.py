@@ -44,6 +44,10 @@ app_license = "mit"
 
 # include js in doctype views
 # doctype_js = {"doctype" : "public/js/doctype.js"}
+doctype_js = {
+    "Employee" : "public/js/employee.js",
+    "Payroll Entry" : "public/js/payroll_entry.js"
+    }
 # doctype_list_js = {"doctype" : "public/js/doctype_list.js"}
 # doctype_tree_js = {"doctype" : "public/js/doctype_tree.js"}
 # doctype_calendar_js = {"doctype" : "public/js/doctype_calendar.js"}
@@ -144,7 +148,14 @@ app_license = "mit"
 # 		"on_trash": "method"
 # 	}
 # }
-
+doc_events = {
+    "Employee": {
+        "before_save": "custom_hrms.api.employee.on_employee_before_save"
+    },
+    "Salary Slip": {
+        "validate": "custom_hrms.api.payroll.assign_salary_structure_based_on_regime"
+    }
+}
 # Scheduled Tasks
 # ---------------
 
@@ -242,3 +253,22 @@ app_license = "mit"
 # 	"Logging DocType Name": 30  # days to retain logs
 # }
 
+fixtures = [
+    # Custom Fields already handled by Export Customizations
+    "Custom Field",
+
+    # Add Reports
+    {"doctype": "Report", "filters": [["name", "in", ["Tax Deduction Comparison", "Applicants by Source (Query Report)"]]]},
+
+    # Add Print Formats
+    {"doctype": "Print Format", "filters": [["name", "in", ["Custom Payroll Slip", "Experience Letter"]]]},
+
+    # Add Workflow (includes states & transitions automatically)
+    {"doctype": "Workflow", "filters": [["name", "in", ["Recruitment Workflow"]]]},
+
+    # Add Dashboard
+    {"doctype": "Dashboard", "filters": [["name", "in", ["Recruitment Dashboard"]]]},
+
+    {"doctype": "Role", "filters": [["role_name", "in", ["Hiring Manager", "Interviewer", "HR Manager"]]]}
+
+]

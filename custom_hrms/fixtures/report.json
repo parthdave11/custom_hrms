@@ -1,0 +1,78 @@
+[
+ {
+  "add_total_row": 0,
+  "add_translate_data": 0,
+  "columns": [],
+  "disabled": 0,
+  "docstatus": 0,
+  "doctype": "Report",
+  "filters": [],
+  "is_standard": "No",
+  "javascript": null,
+  "json": null,
+  "letter_head": null,
+  "modified": "2025-09-13 17:03:02.967903",
+  "module": "Custom Hrms",
+  "name": "Applicants by Source (Query Report)",
+  "prepared_report": 0,
+  "query": "SELECT\r\n  IFNULL(custom_source_of_application, 'Unknown') AS source,\r\n  COUNT(name) AS total_applicants\r\nFROM `tabJob Applicant`\r\nGROUP BY source\r\nORDER BY total_applicants DESC;\r\n",
+  "ref_doctype": "Job Applicant",
+  "reference_report": null,
+  "report_name": "Applicants by Source (Query Report)",
+  "report_script": null,
+  "report_type": "Query Report",
+  "roles": [
+   {
+    "parent": "Applicants by Source (Query Report)",
+    "parentfield": "roles",
+    "parenttype": "Report",
+    "role": "HR User"
+   },
+   {
+    "parent": "Applicants by Source (Query Report)",
+    "parentfield": "roles",
+    "parenttype": "Report",
+    "role": "Employee Self Service"
+   }
+  ],
+  "timeout": 0
+ },
+ {
+  "add_total_row": 0,
+  "add_translate_data": 0,
+  "columns": [],
+  "disabled": 0,
+  "docstatus": 0,
+  "doctype": "Report",
+  "filters": [],
+  "is_standard": "No",
+  "javascript": null,
+  "json": null,
+  "letter_head": null,
+  "modified": "2025-09-13 22:31:28.472300",
+  "module": "Custom Hrms",
+  "name": "Tax Deduction Comparison",
+  "prepared_report": 0,
+  "query": "SELECT\r\n    ss.employee,\r\n    e.employee_name,\r\n    e.custom_tax_regime_preference,\r\n    SUM(CASE WHEN ssd.salary_component = 'Income Tax' THEN ssd.amount ELSE 0 END) AS total_tax\r\nFROM `tabSalary Slip` ss\r\nINNER JOIN `tabEmployee` e ON ss.employee = e.name\r\nINNER JOIN `tabSalary Detail` ssd ON ssd.parent = ss.name\r\nWHERE ss.docstatus = 1\r\nAND ssd.parentfield = 'deductions'\r\nGROUP BY ss.employee, e.employee_name, e.custom_tax_regime_preference\r\nORDER BY e.employee_name;\r\n",
+  "ref_doctype": "Salary Slip",
+  "reference_report": null,
+  "report_name": "Tax Deduction Comparison",
+  "report_script": null,
+  "report_type": "Query Report",
+  "roles": [
+   {
+    "parent": "Tax Deduction Comparison",
+    "parentfield": "roles",
+    "parenttype": "Report",
+    "role": "HR User"
+   },
+   {
+    "parent": "Tax Deduction Comparison",
+    "parentfield": "roles",
+    "parenttype": "Report",
+    "role": "Employee Self Service"
+   }
+  ],
+  "timeout": 0
+ }
+]
