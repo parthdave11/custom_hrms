@@ -1,0 +1,30 @@
+[
+ {
+  "cards": [
+   {
+    "card": null,
+    "parent": "Recruitment Dashboard",
+    "parentfield": "cards",
+    "parenttype": "Dashboard"
+   }
+  ],
+  "chart_options": null,
+  "charts": [
+   {
+    "chart": "Applicants by Source",
+    "parent": "Recruitment Dashboard",
+    "parentfield": "charts",
+    "parenttype": "Dashboard",
+    "width": "Half"
+   }
+  ],
+  "dashboard_name": "Recruitment Dashboard",
+  "docstatus": 0,
+  "doctype": "Dashboard",
+  "is_default": 0,
+  "is_standard": 0,
+  "modified": "2025-09-13 18:06:54.695852",
+  "module": null,
+  "name": "Recruitment Dashboard"
+ }
+]
