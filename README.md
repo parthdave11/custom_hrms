@@ -1,33 +1,192 @@
-### Custom Hrms
+# Custom HRMS
 
-POC for Frappe HR custommization
+Custom HRMS is a Frappe + ERPNext + HRMS v15 based application that implements **end-to-end HR customizations** as part of a POC assignment.  
+It automates recruitment workflows, payroll processing, salary structure assignment based on tax regime, and provides custom dashboards, reports, and print formats.
 
-### Installation
+---
 
-You can install this app using the [bench](https://github.com/frappe/bench) CLI:
+## 🚀 Installation & Setup
+
+Follow these steps to install and set up Custom HRMS on your local bench:
 
 ```bash
+# Go to your bench folder
 cd $PATH_TO_YOUR_BENCH
-bench get-app $URL_OF_THIS_REPO --branch develop
-bench install-app custom_hrms
-```
 
-### Contributing
+# Get the app from GitHub (always use feature branch, not main)
+bench get-app https://github.com/parthdave11/custom_hrms.git --branch main
 
-This app uses `pre-commit` for code formatting and linting. Please [install pre-commit](https://pre-commit.com/#installation) and enable it for this repository:
+# Install on your site
+bench --site <yoursite.local> install-app custom_hrms
 
-```bash
-cd apps/custom_hrms
-pre-commit install
-```
+# Apply migrations & fixtures (custom fields, workflows, reports, print formats)
+bench --site <yoursite.local> migrate
 
-Pre-commit is configured to use the following tools for checking and formatting your code:
+# Rebuild assets
+bench build
+bench restart
 
-- ruff
-- eslint
-- prettier
-- pyupgrade
 
-### License
 
-mit
+
+### ✅ What Gets Installed Automatically
+
+The app ships with **fixtures** for:
+
+*   **Custom Fields** (custom\_tax\_regime\_preference in Employee, custom\_source\_of\_application in Job Applicant, etc.)
+    
+*   **Recruitment Workflow** with all states, transitions, and required roles
+    
+*   **Recruitment Dashboard** with chart
+    
+*   **Custom Reports**
+    
+    *   Applicants by Source (Query Report)
+        
+    *   Tax Deduction Comparison (Query Report)
+        
+*   **Custom Print Formats**
+    
+    *   Custom Payroll Slip (branded pay slip)
+        
+    *   Experience Letter (for exited employees only)
+        
+
+This ensures anyone who installs this app gets **the same configuration, workflows, reports, and print formats out of the box**.
+
+🛠 Post-Installation Configuration
+----------------------------------
+
+### 1\. Salary Structure Setup
+
+Two salary structures are already included:
+
+*   **Salary Structure – Old Regime**
+    
+*   **Salary Structure – New Regime**
+    
+
+You must assign these salary structures to employees **once** using **Bulk Assignment**.The system will automatically switch to the correct salary structure at payroll run based on the employee’s **Tax Regime Preference**.
+
+🧩 Features Implemented (Part-wise)
+-----------------------------------
+
+### **Part 1 – Recruitment Workflow & Dashboard**
+
+*   Workflow for **Job Applicant** with states:
+    
+    *   **Application → Screening → Interview → Offer → Hired / Rejected**
+        
+*   Role-based workflow actions:
+    
+    *   HR Manager, Interviewer, and Hiring Manager have separate transitions
+        
+*   Added **Recruitment Dashboard**:
+    
+    *   Displays Applicant count grouped by Source using a chart
+        
+    *   Includes number cards for quick overview
+        
+
+### **Part 2 – Employee Lifecycle**
+
+*   Added custom field custom_employment_stage in Employee
+    
+*   Automated status tracking:
+    
+    *   Joining → Inactive
+        
+    *   Confirmation → Active
+        
+    *   Exit → Left
+        
+*   Added **Experience Letter Print Format**:
+    
+    *   Available only for employees whose status = "Left"
+        
+    *   For other employees, system displays a message:“You are still part of the organization, so you cannot view the Experience Letter.”
+        
+
+### **Part 3 – Salary Structure & Payroll**
+
+*   Created Salary Structure with:
+    
+    *   **Basic**, **HRA**, **Special Allowance**, **PF**, **Professional Tax**
+        
+*   Added both **Earnings** and **Deductions**
+    
+*   Bulk assignment of salary structures to multiple employees
+    
+*   Created **Custom Payroll Slip Print Format**:
+    
+    *   Company Logo & Branding
+        
+    *   Earnings/Deductions tables
+        
+    *   Bank details & Net Pay
+        
+
+### **Part 4 – Tax Regime Implementation**
+
+*   Added custom field **Tax Regime Preference** in Employee
+    
+*   Created two Salary Structures:
+    
+    *   **Old Regime** (with HRA & special allowances)
+        
+    *   **New Regime** (simplified with fewer exemptions)
+        
+*   Automated Salary Structure selection at **Payroll Run** using server-side hook:
+    
+    *   On payroll creation, employees with New Regime are auto-assigned to **New Regime salary structure**
+        
+    *   This avoids manual re-assignments and prevents validation errors
+        
+*   Built **Tax Deduction Comparison Report**:
+    
+    *   Compares total Income Tax deductions for employees by regime
+        
+
+🛠 Additional Fixes & Enhancements
+----------------------------------
+
+*   **Sync Salary Structure Button in Payroll Entry**
+    
+    *   Fixes validation error:Please assign a Salary Structure for Employee applicable from or before
+        
+    *   Automatically removes wrong salary structure assignments
+        
+    *   Reassigns correct salary structure based on Tax Regime Preference
+        
+    *   Ensures Salary Slips can be created/submitted without manual steps
+        
+    
+
+📊 Reports & Dashboards
+-----------------------
+
+*   **Applicants by Source Report**
+    
+    *   Shows recruitment funnel breakdown
+        
+    *   Grouped by source (Referral, Job Portal, etc.)
+        
+*   **Tax Deduction Comparison Report**
+    
+    *   Compare total tax deduction (Old vs New regime)
+        
+    *   Useful for finance & compliance teams
+        
+*   **Recruitment Dashboard**
+    
+    *   Displays Applicant distribution in chart form
+        
+    *   Quick stats with number cards
+        
+
+🖨 Print Formats
+----------------
+
+*   **Custom Payroll Slip** – Clean, branded payslip with earnings & deductions table
+    
+*   **Experience Letter** – Auto-generated letter with company details, designation, dates
