@@ -13,7 +13,7 @@ Follow these steps to install and set up Custom HRMS on your local bench:
 # Go to your bench folder
 cd $PATH_TO_YOUR_BENCH
 
-# Get the app from GitHub (always use feature branch, not main)
+# Get the app from GitHub
 bench get-app https://github.com/parthdave11/custom_hrms.git --branch main
 
 # Install on your site
@@ -190,3 +190,28 @@ You must assign these salary structures to employees **once** using **Bulk Assig
 *   **Custom Payroll Slip** – Clean, branded payslip with earnings & deductions table
     
 *   **Experience Letter** – Auto-generated letter with company details, designation, dates
+
+
+### **Part 5 – Employee Investment Declaration (Customization)**
+
+*   Created new **Custom Doctype** – Employee Investment Declaration with fields:
+    
+    *   **Section 80C** (LIC, PPF, ELSS, etc.)
+        
+    *   **Section 80D** (Medical Insurance)
+        
+    *   **Other Exemptions**
+        
+*   Added **Unique Constraint** on (employee, fiscal\_year):
+    
+    *   Ensures only one declaration per employee per fiscal year
+        
+    *   Prevents duplicate entries & tax miscalculations
+        
+*   Linked this to **Payroll Calculation**:
+    
+    *   The declared investment amounts reduce taxable income
+        
+    *   Updated payroll calculation logic to factor in these amounts before calculating Income Tax
+        
+*   This allows accurate **tax calculation** without manual overrides and helps finance teams during tax filing.
